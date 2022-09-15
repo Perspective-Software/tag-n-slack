@@ -1,0 +1,18 @@
+{
+  "name": "tag-n-slack",
+  "description": "Creates a new Tag with a Changelog from `CHANGELOG.md` using the `version` from `package.json` and notifies Slack about the release.",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "ncc build src/index.js -o action"
+  },
+  "dependencies": {
+    "@actions/core": "^1.9.1",
+    "@actions/github": "^5.0.3",
+    "axios": "^0.27.2",
+    "gh-release": "^6.0.4",
+    "slack-node": "^0.1.8"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.34.0"
+  }
+}
