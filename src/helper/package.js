@@ -18,6 +18,8 @@ internals.findPackageJson = (path) => {
 internals.getPackageVersion = (path) => {
   const packageJson = internals.findPackageJson(path);
 
+  console.log('package json:', packageJson)
+
   return JSON.parse(packageJson).version;
 };
 

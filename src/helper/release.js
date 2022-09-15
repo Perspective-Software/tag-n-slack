@@ -1,46 +1,46 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const ghRelease = require( 'gh-release' );
-const axios = require( 'axios' );
+const ghRelease = require('gh-release');
+const axios = require('axios');
 
 const internals = {};
 
 const token = core.getInput('github-access-token');
 
 internals.fetchGithubReleases = () => {
-  console.log('Repo name:', github.context.payload.repository.full_name);
+    console.log('Repo name:', github.context.payload.repository.full_name);
 
-  const request = {
-    method  : 'GET',
-    url     : `https://api.github.com/repos/${github.context.payload.repository.full_name}/releases`,
-    headers : { 'Authorization' : `token ${token}` },
-    json    : true,
-  };
+    const request = {
+        method: 'GET',
+        url: `https://api.github.com/repos/${github.context.payload.repository.full_name}/releases`,
+        headers: { Authorization: `token ${token}` },
+        json: true,
+    };
 
-  return axios( request )
-    .then( ( response ) => {
-      return response.data.map( ( release ) => release.name );
-    } )
-    .catch( ( err ) => {
-      throw err;
-    } );
+    return axios(request)
+        .then((response) => {
+            return response.data.map((release) => release.name);
+        })
+        .catch((err) => {
+            throw err;
+        });
 };
 
 internals.createGithubRelease = () => {
-  return new Promise( ( resolve, reject ) => {
-    const options = {};
+    return new Promise((resolve, reject) => {
+        const options = {};
 
-    options.auth = { token };
-    ghRelease( options, ( err, result ) => {
-      if ( err ) {
-        console.log( err );
-        reject( err );
-      }
-      // create release response: https://developer.github.com/v3/repos/releases/#response-4
-      console.log( 'Created new Release on Github:', result.url );
-      resolve( result );
-    } );
-  } );
+        options.auth = { token };
+        ghRelease(options, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            // create release response: https://developer.github.com/v3/repos/releases/#response-4
+            console.log('Created new Release on Github:', result.url);
+            resolve(result);
+        });
+    });
 };
 
 module.exports = internals;
