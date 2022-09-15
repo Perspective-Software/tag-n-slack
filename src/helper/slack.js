@@ -9,7 +9,7 @@ const informSlack = (release) => {
 
     slack.webhook(
         {
-            fallback: `Version ${release.name} was released :rocket:`,
+            text: `Version ${release.name} was released :rocket:`,
             blocks: [
                 {
                     type: 'header',
