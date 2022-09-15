@@ -7,16 +7,15 @@ const informSlack = (release) => {
 
     slack.setWebhook(core.getInput('slack-webhook-url'));
 
-    console.log('release', release);
-
     slack.webhook(
         {
+            fallback: `Version ${release.name} was released :rocket:`,
             blocks: [
                 {
                     type: 'header',
                     text: {
                         type: 'plain_text',
-                        text: `Version ${release.name} was released.`,
+                        text: `Version ${release.name} was released :rocket:`,
                     },
                 },
                 {
@@ -26,7 +25,7 @@ const informSlack = (release) => {
                     type: 'section',
                     text: {
                         type: 'mrkdwn',
-                        text: '*Changelog*',
+                        text: '*Changelog* :notebook_with_decorative_cover:',
                     },
                 },
                 {
@@ -34,6 +33,27 @@ const informSlack = (release) => {
                     text: {
                         type: 'mrkdwn',
                         text: release.body,
+                    },
+                },
+                {
+                    type: 'divider',
+                },
+                {
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: 'Check it out!',
+                    },
+                    accessory: {
+                        type: 'button',
+                        text: {
+                            type: 'plain_text',
+                            text: 'Visit',
+                            emoji: true,
+                        },
+                        value: 'visit',
+                        url: 'https://next.perspective.com',
+                        action_id: 'button-action',
                     },
                 },
             ],
