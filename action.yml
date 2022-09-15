@@ -7,6 +7,9 @@
     slack-webhook-url:
       description: Provide the Slack Webhook URL
       required: true
+    package-version:
+      description: The `version` string in your `package.json`
+      required: true
   runs:
     using: node16
     main: action/index.js

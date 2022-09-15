@@ -5,11 +5,13 @@ const axios = require( 'axios' );
 
 const internals = {};
 
+const token = core.getInput('github-access-token');
+
 internals.fetchGithubReleases = () => {
   const request = {
     method  : 'GET',
     url     : `https://api.github.com/repos/perspective-software/perspective-app-next/releases`,
-    headers : { 'Authorization' : `token ${core.getInput('github-access-token')}` },
+    headers : { 'Authorization' : `token ${token}` },
     json    : true,
   };
 
@@ -28,7 +30,7 @@ internals.createGithubRelease = () => {
   return new Promise( ( resolve, reject ) => {
     const options = {};
 
-    options.auth = { token : config.env.GITHUB_ACCESS_TOKEN };
+    options.auth = { token };
     ghRelease( options, ( err, result ) => {
       if ( err ) {
         console.log( err );

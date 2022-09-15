@@ -1,3 +1,4 @@
+const core = require('@actions/core');
 const informSlack = require('./helper/slack');
 const releaseUtils = require('./helper/release');
 
@@ -11,7 +12,7 @@ const run = async () => {
     console.log( err );
   }
 
-  if ( releases.indexOf( `v${pkg.version}` ) > -1 ) {
+  if ( releases.indexOf( `v${core.getInput('package-version')}` ) > -1 ) {
     console.log( 'Skipping: Release already exists' );
 
     return Promise.resolve();
