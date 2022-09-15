@@ -89176,7 +89176,7 @@ const run = async () => {
   try {
     releases = await releaseUtils.fetchGithubReleases();
   } catch ( err ) {
-    console.log( err );
+    throw err;
   }
 
   if ( releases.indexOf( `v${version}` ) > -1 ) {
@@ -89188,7 +89188,7 @@ const run = async () => {
   try {
     release = await releaseUtils.createGithubRelease();
   } catch ( err ) {
-    console.log( err );
+    throw err;
   }
 
   return informSlack( release );
