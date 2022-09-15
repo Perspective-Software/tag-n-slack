@@ -3,7 +3,6 @@ const core = require('@actions/core');
 
 const informSlack = async (release) => {
     console.log('Informing Slack...');
-    const slack = new Slack();
 
     const webhook = new IncomingWebhook(core.getInput('slack-webhook-url'));
 
