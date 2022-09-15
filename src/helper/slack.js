@@ -43,7 +43,7 @@ const informSlack = async (release) => {
                     type: 'section',
                     text: {
                         type: 'mrkdwn',
-                        text: 'Check it out!',
+                        text: '*Check it out!*',
                     },
                     accessory: {
                         type: 'button',
@@ -59,6 +59,8 @@ const informSlack = async (release) => {
                 },
             ],
         });
+
+        console.log('Done!');
     } catch (err) {
         throw err;
     }
