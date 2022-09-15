@@ -4,7 +4,10 @@ const core = require('@actions/core');
 const informSlack = (release) => {
     console.log('Informing Slack...');
     const slack = new Slack();
+
     slack.setWebhook(core.getInput('slack-webhook-url'));
+
+    console.log('release', release);
 
     slack.webhook(
         {

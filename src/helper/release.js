@@ -8,8 +8,6 @@ const internals = {};
 const token = core.getInput('github-access-token');
 
 internals.fetchGithubReleases = () => {
-    console.log('Repo name:', github.context.payload.repository.full_name);
-
     const request = {
         method: 'GET',
         url: `https://api.github.com/repos/${github.context.payload.repository.full_name}/releases`,

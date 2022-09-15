@@ -88649,8 +88649,6 @@ internals.findPackageJson = (path) => {
 internals.getPackageVersion = (path) => {
   const packageJson = internals.findPackageJson(path);
 
-  console.log('package json:', packageJson)
-
   return JSON.parse(packageJson).version;
 };
 
@@ -88672,8 +88670,6 @@ const internals = {};
 const token = core.getInput('github-access-token');
 
 internals.fetchGithubReleases = () => {
-    console.log('Repo name:', github.context.payload.repository.full_name);
-
     const request = {
         method: 'GET',
         url: `https://api.github.com/repos/${github.context.payload.repository.full_name}/releases`,
@@ -88721,7 +88717,10 @@ const core = __nccwpck_require__(2186);
 const informSlack = (release) => {
     console.log('Informing Slack...');
     const slack = new Slack();
+
     slack.setWebhook(core.getInput('slack-webhook-url'));
+
+    console.log('release', release);
 
     slack.webhook(
         {
