@@ -1,80 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 1831:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
-const ghRelease = __nccwpck_require__( 4264 );
-const axios = __nccwpck_require__( 6545 );
-
-const internals = {};
-
-internals.fetchGithubReleases = () => {
-  const request = {
-    method  : 'GET',
-    url     : `https://api.github.com/repos/perspective-software/perspective-app-next/releases`,
-    headers : { 'Authorization' : `token ${core.getInput('github-access-token')}` },
-    json    : true,
-  };
-
-  console.log(github.context);
-
-  return axios( request )
-    .then( ( response ) => {
-      return response.data.map( ( release ) => release.name );
-    } )
-    .catch( ( err ) => {
-      throw err;
-    } );
-};
-
-internals.createGithubRelease = () => {
-  return new Promise( ( resolve, reject ) => {
-    const options = {};
-
-    options.auth = { token : config.env.GITHUB_ACCESS_TOKEN };
-    ghRelease( options, ( err, result ) => {
-      if ( err ) {
-        console.log( err );
-        reject( err );
-      }
-      // create release response: https://developer.github.com/v3/repos/releases/#response-4
-      console.log( 'Created new Release on Github:', result.url );
-      resolve( result );
-    } );
-  } );
-};
-
-module.exports = internals;
-
-
-/***/ }),
-
-/***/ 4444:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const Slack = __nccwpck_require__(8132);
-const core = __nccwpck_require__(2186);
-
-const informSlack = ( release ) => {
-  console.log( '-> Informing Slack' );
-  const slack = new Slack();
-  slack.setWebhook( core.getInput('slack-webhook-url') );
-
-  slack.webhook( {
-    text : `Frontend version ${release.name} was released.\n\n${release.body}`
-  }, ( err, response ) => {
-    console.log( 'slack =>', err, response.status );
-  } );
-};
-
-module.exports = informSlack;
-
-
-/***/ }),
-
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -214,7 +140,7 @@ const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(5278);
 const os = __importStar(__nccwpck_require__(2037));
 const path = __importStar(__nccwpck_require__(1017));
-const uuid_1 = __nccwpck_require__(3663);
+const uuid_1 = __nccwpck_require__(5840);
 const oidc_utils_1 = __nccwpck_require__(8041);
 /**
  * The code to exit an action
@@ -82774,7 +82700,7 @@ function extend(origin, add) {
 
 /***/ }),
 
-/***/ 3663:
+/***/ 5840:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -87207,7 +87133,7 @@ define(function() {
 
 /***/ }),
 
-/***/ 5840:
+/***/ 30:
 /***/ ((module) => {
 
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
@@ -88420,7 +88346,7 @@ define(function () {
 	var inspect = __nccwpck_require__(9606);
 	var generate = __nccwpck_require__(3042);
 	var progress = __nccwpck_require__(250);
-	var withThis = __nccwpck_require__(5840);
+	var withThis = __nccwpck_require__(30);
 	var unhandledRejection = __nccwpck_require__(4429);
 	var TimeoutError = __nccwpck_require__(8450);
 
@@ -88696,6 +88622,82 @@ function extend() {
 
     return target
 }
+
+
+/***/ }),
+
+/***/ 7705:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+const github = __nccwpck_require__(5438);
+const ghRelease = __nccwpck_require__( 4264 );
+const axios = __nccwpck_require__( 6545 );
+
+const internals = {};
+
+const token = core.getInput('github-access-token');
+
+internals.fetchGithubReleases = () => {
+  const request = {
+    method  : 'GET',
+    url     : `https://api.github.com/repos/perspective-software/perspective-app-next/releases`,
+    headers : { 'Authorization' : `token ${token}` },
+    json    : true,
+  };
+
+  console.log(github.context);
+
+  return axios( request )
+    .then( ( response ) => {
+      return response.data.map( ( release ) => release.name );
+    } )
+    .catch( ( err ) => {
+      throw err;
+    } );
+};
+
+internals.createGithubRelease = () => {
+  return new Promise( ( resolve, reject ) => {
+    const options = {};
+
+    options.auth = { token };
+    ghRelease( options, ( err, result ) => {
+      if ( err ) {
+        console.log( err );
+        reject( err );
+      }
+      // create release response: https://developer.github.com/v3/repos/releases/#response-4
+      console.log( 'Created new Release on Github:', result.url );
+      resolve( result );
+    } );
+  } );
+};
+
+module.exports = internals;
+
+
+/***/ }),
+
+/***/ 1552:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const Slack = __nccwpck_require__(8132);
+const core = __nccwpck_require__(2186);
+
+const informSlack = ( release ) => {
+  console.log( '-> Informing Slack' );
+  const slack = new Slack();
+  slack.setWebhook( core.getInput('slack-webhook-url') );
+
+  slack.webhook( {
+    text : `Frontend version ${release.name} was released.\n\n${release.body}`
+  }, ( err, response ) => {
+    console.log( 'slack =>', err, response.status );
+  } );
+};
+
+module.exports = informSlack;
 
 
 /***/ }),
@@ -89129,8 +89131,9 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const informSlack = __nccwpck_require__(4444);
-const releaseUtils = __nccwpck_require__(1831);
+const core = __nccwpck_require__(2186);
+const informSlack = __nccwpck_require__(1552);
+const releaseUtils = __nccwpck_require__(7705);
 
 const run = async () => {
   let releases = [];
@@ -89142,7 +89145,7 @@ const run = async () => {
     console.log( err );
   }
 
-  if ( releases.indexOf( `v${pkg.version}` ) > -1 ) {
+  if ( releases.indexOf( `v${core.getInput('package-version')}` ) > -1 ) {
     console.log( 'Skipping: Release already exists' );
 
     return Promise.resolve();
