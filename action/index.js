@@ -39347,8 +39347,6 @@ const informSlack = async (release) => {
 
     const webhook = new IncomingWebhook(core.getInput('slack-webhook-url'));
 
-    IncomingWebhook(core.getInput('slack-webhook-url'));
-
     try {
         await webhook.send(
           {
