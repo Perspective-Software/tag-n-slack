@@ -53,7 +53,7 @@ const informSlack = async (release) => {
                             emoji: true,
                         },
                         value: 'visit',
-                        url: 'https://next.perspective.com',
+                        url: 'https://next.perspective.co',
                         action_id: 'button-action',
                     },
                 },
