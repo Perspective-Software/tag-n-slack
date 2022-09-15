@@ -13,7 +13,7 @@ const informSlack = (release) => {
                     type: 'header',
                     text: {
                         type: 'plain_text',
-                        text: `Frontend version ${release.name} was released.\n\n${release.body}`,
+                        text: `Version ${release.name} was released.`,
                     },
                 },
                 {
@@ -23,19 +23,23 @@ const informSlack = (release) => {
                     type: 'section',
                     text: {
                         type: 'mrkdwn',
+                        text: '*Changelog*',
+                    },
+                },
+                {
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
                         text: release.body,
                     },
                 },
             ],
-            icon_url: core.getInput('slack-icon'),
-            color: core.getInput('slack-color'),
-            username: core.getInput('slack-username'),
         },
         (err, response) => {
             if (err) {
                 console.warn(err);
             } else {
-                console.log('Slack repsonse:', response.status);
+                console.log('Slack response:', response);
             }
         },
     );

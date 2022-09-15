@@ -10,15 +10,6 @@
     package-json-path:
       description: Path of package.json
       default: './'
-    slack-icon:
-      description: Slack Icon URL
-      default: 'https://emoji.slack-edge.com/T02SEBT8V/perspective-power2/5faf2f1dd7e6fe60.png'
-    slack-color:
-        description: Slack message highlight color
-        default: 'good'
-    slack-username:
-      description: Slack username
-      default: 'Release Tracker'
   runs:
     using: node16
     main: action/index.js
