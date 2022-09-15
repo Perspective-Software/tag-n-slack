@@ -88626,6 +88626,37 @@ function extend() {
 
 /***/ }),
 
+/***/ 7195:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const fs = __nccwpck_require__(7147);
+const { join } = __nccwpck_require__(1017);
+
+const internals = {};
+
+/**
+ * Find package.json with path.
+ * @param path
+ */
+internals.findPackageJson = (path) => {
+  return fs.readFileSync(join(path, 'package.json')).toString();
+};
+
+/**
+ * Get version field within package.json
+ * @param path
+ */
+internals.getPackageVersion = (path) => {
+  const packageJson = internals.findPackageJson(path);
+
+  return JSON.parse(packageJson).version;
+};
+
+module.exports = internals;
+
+
+/***/ }),
+
 /***/ 7705:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -89134,10 +89165,13 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(2186);
 const informSlack = __nccwpck_require__(1552);
 const releaseUtils = __nccwpck_require__(7705);
+const packageUtils = __nccwpck_require__(7195);
 
 const run = async () => {
   let releases = [];
   let release = {};
+
+  const version = packageUtils.getPackageVersion(core.getInput('package-json-path'));
 
   try {
     releases = await releaseUtils.fetchGithubReleases();
@@ -89145,7 +89179,7 @@ const run = async () => {
     console.log( err );
   }
 
-  if ( releases.indexOf( `v${core.getInput('package-version')}` ) > -1 ) {
+  if ( releases.indexOf( `v${version}` ) > -1 ) {
     console.log( 'Skipping: Release already exists' );
 
     return Promise.resolve();
@@ -89157,7 +89191,6 @@ const run = async () => {
     console.log( err );
   }
 
-  // return Promise.resolve();
   return informSlack( release );
 }
 

@@ -1,4 +1,4 @@
-  name: 'Tag n Slack'
+  name: Tag n Slack
   description: Creates a new Tag with a Changelog from `CHANGELOG.md` using the `version` from `package.json` and notifies Slack about the release.
   inputs:
     github-access-token:
@@ -7,9 +7,9 @@
     slack-webhook-url:
       description: Provide the Slack Webhook URL
       required: true
-    package-version:
-      description: The `version` string in your `package.json`
-      required: true
+    package-json-path:
+      description: Path of package.json
+      default: './'
   runs:
     using: node16
     main: action/index.js
