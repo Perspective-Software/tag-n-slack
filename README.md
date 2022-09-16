@@ -27,16 +27,18 @@ jobs:
         uses: actions/checkout@v2
       - name: Tag n' Slack
         id: tag-n-slack
-        uses: perspective-software/tag-n-slack@v1.1.0
+        uses: perspective-software/tag-n-slack@v1.1.1
         with:
           github-access-token: ${{ github.token }}
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_RELEASE }}
           slack-release-link: 'https://github.com/...'
+          slack-icon-emoji: ':zap:'
 ```
 
-- `github-access-token` is automatically created during the workflow and only valid for this one workflow. Nothing to do here.
-- `slack-webhook-url` is your Slack Webhook URL defined in your [Github Action's secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#creating-encrypted-secrets-for-a-repository). You can create a Slack webhook [here](https://slack.com/apps/A0F7XDUAZ-incoming-webhooks).
-- `slack-release-link` is the link to your project
+- `github-access-token` (required) is automatically created during the workflow and only valid for this one workflow. Nothing to do here.
+- `slack-webhook-url` (required) is your Slack Webhook URL defined in your [Github Action's secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#creating-encrypted-secrets-for-a-repository). You can create a Slack webhook [here](https://slack.com/apps/A0F7XDUAZ-incoming-webhooks).
+- `slack-release-link` (required) is the link to your project.
+- `slack-icon-emoji` (optional) is the Emoji next to the Slack message. Can also be one of your workspaces custom emojis.
 
 ## How it works
 
