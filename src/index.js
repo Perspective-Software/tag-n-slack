@@ -13,15 +13,15 @@ const run = async () => {
   // fetch existing releases
   try {
     releases = await releaseUtils.fetchGithubReleases();
-
-    // Don't create release if it already exists
-    if ( releases.indexOf( `v${version}` ) > -1 ) {
-      console.log( 'Skipping: Release already exists' );
-
-      throw 'Release already exists';
-    }
   } catch ( err ) {
     throw err;
+  }
+
+  // Don't create release if it already exists
+  if ( releases.indexOf( `v${version}` ) > -1 ) {
+    console.log( 'Skipping: Release already exists' );
+
+    return Promise.reject('Release already exists');
   }
 
   // Create a release
