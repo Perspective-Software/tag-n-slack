@@ -39679,38 +39679,33 @@ const releaseUtils = __nccwpck_require__(7705);
 const packageUtils = __nccwpck_require__(7195);
 
 const run = async () => {
-  let releases = [];
-  let release = {};
+    let releases = [];
+    let release = {};
 
-  // Get version from package.json
-  const version = packageUtils.getPackageVersion(core.getInput('package-json-path'));
+    // fetch existing releases
+    try {
+        // Get version from package.json
+        const version = packageUtils.getPackageVersion(core.getInput('package-json-path'));
 
-  // fetch existing releases
-  try {
-    releases = await releaseUtils.fetchGithubReleases();
-  } catch ( err ) {
-    throw err;
-  }
+        releases = await releaseUtils.fetchGithubReleases();
 
-  // Don't create release if it already exists
-  if ( releases.indexOf( `v${version}` ) > -1 ) {
-    console.log( 'Skipping: Release already exists' );
+        // Don't create release if it already exists
+        if (releases.indexOf(`v${version}`) > -1) {
+            console.log('Skipping: Release already exists');
 
-    return Promise.reject('Release already exists');
-  }
+            return Promise.reject('Release already exists');
+        }
 
-  // Create a release
-  try {
-    release = await releaseUtils.createGithubRelease();
-  } catch ( err ) {
-    throw err;
-  }
+        release = await releaseUtils.createGithubRelease();
 
-  // Notify Slack about the release
-  informSlack( release );
+        // Notify Slack about the release
+        informSlack(release);
 
-  return release;
-}
+        return release;
+    } catch (err) {
+        throw err;
+    }
+};
 
 run();
 
