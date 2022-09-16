@@ -39346,8 +39346,7 @@ const informSlack = async (release) => {
     console.log('Informing Slack...');
 
     const webhook = new IncomingWebhook(core.getInput('slack-webhook-url'), {
-        icon_emoji: core.getInput('slack-icon-emoji'),
-        username: core.getInput('slack-username')
+        icon_emoji: core.getInput('slack-icon-emoji')
     });
 
     try {
@@ -39683,27 +39682,34 @@ const run = async () => {
   let releases = [];
   let release = {};
 
+  // Get version from package.json
   const version = packageUtils.getPackageVersion(core.getInput('package-json-path'));
 
+  // fetch existing releases
   try {
     releases = await releaseUtils.fetchGithubReleases();
   } catch ( err ) {
     throw err;
   }
 
+  // Don't create release if it already exists
   if ( releases.indexOf( `v${version}` ) > -1 ) {
     console.log( 'Skipping: Release already exists' );
 
-    return Promise.resolve();
+    throw 'Release already exists';
   }
 
+  // Create a release
   try {
     release = await releaseUtils.createGithubRelease();
   } catch ( err ) {
     throw err;
   }
 
-  return informSlack( release );
+  // Notify Slack about the release
+  informSlack( release );
+
+  return release;
 }
 
 run();

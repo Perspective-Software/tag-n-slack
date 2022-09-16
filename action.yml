@@ -16,9 +16,6 @@
     slack-icon-emoji:
       description: Emoji used in the Slack message (default = :rocket:)
       default: ':rocket:'
-    slack-username:
-      description: Username of the Slack message (default = 'Release Tracker')
-      default: 'Release tracker'
   runs:
     using: node16
     main: action/index.js

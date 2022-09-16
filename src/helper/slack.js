@@ -5,8 +5,7 @@ const informSlack = async (release) => {
     console.log('Informing Slack...');
 
     const webhook = new IncomingWebhook(core.getInput('slack-webhook-url'), {
-        icon_emoji: core.getInput('slack-icon-emoji'),
-        username: core.getInput('slack-username')
+        icon_emoji: core.getInput('slack-icon-emoji')
     });
 
     try {
