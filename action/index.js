@@ -39693,7 +39693,7 @@ const run = async () => {
         if (releases.indexOf(`v${version}`) > -1) {
             console.log('Skipping: Release already exists');
 
-            return Promise.reject('Release already exists');
+            throw 'Release already exists';
         }
 
         release = await releaseUtils.createGithubRelease();
@@ -39703,7 +39703,7 @@ const run = async () => {
 
         return release;
     } catch (err) {
-        throw err;
+        console.warn(err)
     }
 };
 
