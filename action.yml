@@ -7,9 +7,18 @@
     slack-webhook-url:
       description: Provide the Slack Webhook URL
       required: true
+    slack-release-link:
+      description: Url of the "Visit" button in the Slack message
+      required: true
     package-json-path:
       description: Path of package.json
       default: './'
+    slack-icon-emoji:
+      description: Emoji used in the Slack message (default = :rocket:)
+      default: ':rocket:'
+    slack-username:
+      description: Username of the Slack message (default = 'Release Tracker')
+      default: 'Release tracker'
   runs:
     using: node16
     main: action/index.js

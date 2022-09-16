@@ -39346,7 +39346,8 @@ const informSlack = async (release) => {
     console.log('Informing Slack...');
 
     const webhook = new IncomingWebhook(core.getInput('slack-webhook-url'), {
-        icon_emoji: ':perspective-power2:',
+        icon_emoji: core.getInput('slack-icon-emoji'),
+        username: core.getInput('slack-username')
     });
 
     try {
@@ -39394,7 +39395,7 @@ const informSlack = async (release) => {
                             emoji: true,
                         },
                         value: 'visit',
-                        url: 'https://next.perspective.co',
+                        url: core.getInput('slack-release-link'),
                         action_id: 'button-action',
                     },
                 },
