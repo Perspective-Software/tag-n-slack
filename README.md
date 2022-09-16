@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Tag n' Slack
         id: tag-n-slack
-        uses: perspective-software/tag-n-slack@1.0.0
+        uses: perspective-software/tag-n-slack@v1
         with:
           github-access-token: ${{ github.token }}
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_RELEASE }}
