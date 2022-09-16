@@ -39705,7 +39705,7 @@ const run = async () => {
     }
 };
 
-run();
+run().then((release) => core.setOutput('release', release));
 
 })();
 

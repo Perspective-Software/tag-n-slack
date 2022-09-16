@@ -1,21 +1,24 @@
-  name: Tag n Slack
-  description: Creates a new Tag with a Changelog from `CHANGELOG.md` using the `version` from `package.json` and notifies Slack about the release.
-  inputs:
+name: Tag n Slack
+description: Creates a new Tag with a Changelog from `CHANGELOG.md` using the `version` from `package.json` and notifies Slack about the release.
+inputs:
     github-access-token:
-      description: Access token for github allowed to read existing Tags of a repository
-      required: true
+        description: Access token for github allowed to read existing Tags of a repository
+        required: true
     slack-webhook-url:
-      description: Provide the Slack Webhook URL
-      required: true
+        description: Provide the Slack Webhook URL
+        required: true
     slack-release-link:
-      description: Url of the "Visit" button in the Slack message
-      required: true
+        description: Url of the "Visit" button in the Slack message
+        required: true
     package-json-path:
-      description: Path of package.json
-      default: './'
+        description: Path of package.json
+        default: './'
     slack-icon-emoji:
-      description: Emoji used in the Slack message (default = :rocket:)
-      default: ':rocket:'
-  runs:
+        description: Emoji used in the Slack message (default = :rocket:)
+        default: ':rocket:'
+outputs:
+    release:
+        description: The Github release object
+runs:
     using: node16
     main: action/index.js
