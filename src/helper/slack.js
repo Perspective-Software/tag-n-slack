@@ -10,13 +10,13 @@ const informSlack = async (release) => {
 
     try {
         await webhook.send({
-            text: `Version ${release.name} was released :rocket:`,
+            text: `${core.getInput('project-name')} v${release.name} was released :rocket:`,
             blocks: [
                 {
                     type: 'header',
                     text: {
                         type: 'plain_text',
-                        text: `Version ${release.name} was released :rocket:`,
+                        text: `${core.getInput('project-name')} v${release.name} was released :rocket:`,
                     },
                 },
                 {

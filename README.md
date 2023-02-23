@@ -33,12 +33,14 @@ jobs:
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_RELEASE }}
           slack-release-link: 'https://github.com/...'
           slack-icon-emoji: ':zap:'
+          project-name: ${{ github.event.repository.name }}
 ```
 
 - `github-access-token` (required) is automatically created during the workflow and only valid for this one workflow. Nothing to do here.
 - `slack-webhook-url` (required) is your Slack Webhook URL defined in your [Github Action's secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#creating-encrypted-secrets-for-a-repository). You can create a Slack webhook [here](https://slack.com/apps/A0F7XDUAZ-incoming-webhooks).
 - `slack-release-link` (required) is the link to your project.
 - `slack-icon-emoji` (optional, default = `:rocket:`) is the Emoji next to the Slack message. Can also be one of your workspaces custom emojis.
+- `project-name` (optional, default = `${{github.event.repository.name}}`) is the name of your project.
 
 ## How it works
 

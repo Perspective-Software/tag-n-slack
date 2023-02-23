@@ -16,6 +16,9 @@ inputs:
     slack-icon-emoji:
         description: Emoji used in the Slack message (default = :rocket:)
         default: ':rocket:'
+    project-name:
+        description: Name of the project (default = Github Repository Name)
+        default: ${{ github.event.repository.name }}
 outputs:
     release:
         description: The Github release object
