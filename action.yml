@@ -1,5 +1,5 @@
 name: Tag n Slack
-description: Creates a new Tag with a Changelog from `CHANGELOG.md` using the `version` from `package.json` and notifies Slack about the release.
+description: Creates a new Tag from `CHANGELOG.md` using the `version` from `package.json` and notifies Slack about the release.
 inputs:
     github-access-token:
         description: Access token for github allowed to read existing Tags of a repository
@@ -23,5 +23,5 @@ outputs:
     release:
         description: The Github release object
 runs:
-    using: node16
+    using: node20
     main: action/index.js
