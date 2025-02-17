@@ -2,14 +2,19 @@ const core = require('@actions/core');
 const informSlack = require('./helper/slack');
 const releaseUtils = require('./helper/release');
 const packageUtils = require('./helper/package');
+const gitUtils = require('./helper/git');
 
 const run = async () => {
     let releases = [];
     let release = {};
 
     try {
-        // Get version from package.json
-        const version = packageUtils.getPackageVersion(core.getInput('package-json-path'));
+        const version = releaseUtils.isReleaseStrategyChangelogFile()
+            ? packageUtils.getPackageVersion(core.getInput('package-json-path'))
+            : gitUtils.getCurrentGitCommitHash();
+        const message = releaseUtils.isReleaseStrategyChangelogFile()
+            ? gitUtils.getCurrentGitCommitMessage()
+            : undefined;
 
         // fetch existing releases
         releases = await releaseUtils.fetchGithubReleases();
@@ -19,7 +24,7 @@ const run = async () => {
             throw 'Skipping: Release already exists';
         }
 
-        release = await releaseUtils.createGithubRelease();
+        release = await releaseUtils.createGithubRelease(strategy, { version, message });
 
         // Notify Slack about the release
         await informSlack(release);
