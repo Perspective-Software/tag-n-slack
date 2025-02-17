@@ -26,19 +26,19 @@ const token = core.getInput('github-access-token');
 internals.getReleaseStrategy = () => {
     const strategy = core.getInput(STRATEGY_INPUT_NAME) || CHANGELOG_FILE_STRATEGY;
 
-    if (![CHANGELOG_FILE_STRATEGY, GITHUB_RELEASE_STRATEGY].includes(strategy)) {
-        throw `${STRATEGY_INPUT_NAME} must be one of: ${CHANGELOG_FILE_STRATEGY}, ${GITHUB_RELEASE_STRATEGY}. Received: ${strategy}`;
+    if (![CHANGELOG_FILE_STRATEGY, GITHUB_RELEASES_STRATEGY].includes(strategy)) {
+        throw `${STRATEGY_INPUT_NAME} must be one of: ${CHANGELOG_FILE_STRATEGY}, ${GITHUB_RELEASES_STRATEGY}. Received: ${strategy}`;
     }
 
     return strategy;
 };
 
 internals.isReleaseStrategyChangelogFile = () => {
-    return getReleaseStrategy() === CHANGELOG_FILE_STRATEGY;
+    return internals.getReleaseStrategy() === CHANGELOG_FILE_STRATEGY;
 };
 
 internals.isReleaseStrategyGithubReleases = () => {
-    return getReleaseStrategy() === GITHUB_RELEASES_STRATEGY;
+    return internals.getReleaseStrategy() === GITHUB_RELEASES_STRATEGY;
 };
 
 internals.fetchGithubReleases = () => {
@@ -69,8 +69,8 @@ internals.createGithubRelease = (strategy, { version, message }) => {
                       body: message,
                       draft: false,
                       prerelease: false,
-                      owner: github.context.payload.repository_owner,
-                      repo: github.context.payload.repository.name,
+                      owner: core.getInput('owner'),
+                      repo: core.getInput('repo'),
                       cli: true,
                   }
                 : {};

@@ -41,6 +41,8 @@ jobs:
                   project-name: ${{ github.event.repository.name }}
                   version-increment-strategy: 'changelog-file'
                   target-commitish: 'main'
+                  owner: 'owner-user'
+                  repo: 'repository-name'
 ```
 
 -   `github-access-token` (required) is automatically created during the workflow and only valid for this one workflow. Nothing to do here.
