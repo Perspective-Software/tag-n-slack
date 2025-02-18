@@ -32,14 +32,15 @@ jobs:
               uses: actions/checkout@v2
             - name: Tag n' Slack
               id: tag-n-slack
-              uses: perspective-software/tag-n-slack@v2.0.0
+              uses: perspective-software/tag-n-slack@v2.0.1
               with:
                   github-access-token: ${{ github.token }}
                   slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_RELEASE }}
                   slack-release-link: 'https://github.com/...'
                   slack-icon-emoji: ':zap:'
                   project-name: ${{ github.event.repository.name }}
-                  version-increment-strategy: 'changelog-file'
+                  project-owner: ${{ github.event.repository.owner.login }}
+                  version-increment-strategy: 'github-releases'
                   target-commitish: 'main'
 ```
 
@@ -48,8 +49,8 @@ jobs:
 -   `slack-release-link` (required) is the link to your project.
 -   `slack-icon-emoji` (optional, default = `:rocket:`) is the Emoji next to the Slack message. Can also be one of your workspaces custom emojis.
 -   `project-name` (optional, default = `${{github.event.repository.name}}`) is the name of your project.
+-   `project-owner` (required when `version-increment-strategy` is `github-releases`), it's the project owner's handle
 -   `version-increment-strategy` (optional, default = `changelog-file`, valid options = `changelog-file` or `github-releases`). `changelog-file` strategy retrieves the version from `package.json` and the release message from `CHANGELOG.md`. `github-releases` strategy retrieves the version and message from the merge commit. The version is the 7-digit hash, and the message is the commit message. It is recommended to use this strategy with "Squash and Merge" in your PRs, where the PR title and description become the commit message.
-
 -   `target-commitish` (optional, default = `main`) is used when `version-increment-strategy` is `github-releases`, it's the project's main branch name.
 
 ## How it works
@@ -66,4 +67,4 @@ As an example, this action will create the Slack notification seen above:
 
 ## Development
 
-make adjustment as required in the `src` directory and run `npm run build` to compile it to `action/index.js` (dist) before pushing.
+make adjustment as required in the `src` directory and run `npm run build` to compile it to `action/index.js` (dist) before commiting and pushing.

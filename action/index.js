@@ -61235,6 +61235,36 @@ function extend() {
 
 /***/ }),
 
+/***/ 130:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const { execSync } = __nccwpck_require__(2081);
+
+const internals = {};
+
+/**
+ * Retrieves the current Git commit hash.
+ *
+ * @returns {string} The first 7 characters of the current Git commit hash.
+ */
+internals.getCurrentGitCommitHash = () => {
+    return execSync('git rev-parse HEAD', { cwd: process.cwd() }).toString().trim().substring(0, 7);
+};
+
+/**
+ * Retrieves the current Git commit message.
+ *
+ * @returns {string} The message of the latest git commit.
+ */
+internals.getCurrentGitCommitMessage = () => {
+    return execSync('git log -1 --pretty=%B', { cwd: process.cwd() }).toString().trim();
+};
+
+module.exports = internals;
+
+
+/***/ }),
+
 /***/ 7195:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -61274,9 +61304,43 @@ const github = __nccwpck_require__(5438);
 const ghRelease = __nccwpck_require__(4264);
 const axios = __nccwpck_require__(8757);
 
+const STRATEGY_INPUT_NAME = 'version-increment-strategy';
+
+/**
+ * This strategy retrieves the version from package.json and the release message from CHANGELOG.md.
+ */
+const CHANGELOG_FILE_STRATEGY = 'changelog-file';
+
+/**
+ * This strategy retrieves the version and message from the merge commit.
+ * The version is the 7-digit hash, and the message is the commit message.
+ *
+ * It is recommended to use this strategy with "Squash and Merge",
+ * where the PR title and description become the commit message.
+ */
+const GITHUB_RELEASES_STRATEGY = 'github-releases';
+
 const internals = {};
 
 const token = core.getInput('github-access-token');
+
+internals.getReleaseStrategy = () => {
+    const strategy = core.getInput(STRATEGY_INPUT_NAME) || CHANGELOG_FILE_STRATEGY;
+
+    if (![CHANGELOG_FILE_STRATEGY, GITHUB_RELEASES_STRATEGY].includes(strategy)) {
+        throw `${STRATEGY_INPUT_NAME} must be one of: ${CHANGELOG_FILE_STRATEGY}, ${GITHUB_RELEASES_STRATEGY}. Received: ${strategy}`;
+    }
+
+    return strategy;
+};
+
+internals.isReleaseStrategyChangelogFile = () => {
+    return internals.getReleaseStrategy() === CHANGELOG_FILE_STRATEGY;
+};
+
+internals.isReleaseStrategyGithubReleases = () => {
+    return internals.getReleaseStrategy() === GITHUB_RELEASES_STRATEGY;
+};
 
 internals.fetchGithubReleases = () => {
     const request = {
@@ -61295,9 +61359,21 @@ internals.fetchGithubReleases = () => {
         });
 };
 
-internals.createGithubRelease = () => {
+internals.createGithubRelease = ({ version, message }) => {
     return new Promise((resolve, reject) => {
-        const options = {};
+        const options = internals.isReleaseStrategyGithubReleases()
+            ? {
+                  tag_name: version,
+                  target_commitish: core.getInput('target-commitish') || 'main',
+                  name: version,
+                  body: message,
+                  draft: false,
+                  prerelease: false,
+                  owner: core.getInput('project-owner'),
+                  repo: core.getInput('project-name'),
+                  cli: true,
+              }
+            : {};
 
         options.auth = { token };
         ghRelease(options, (err, result) => {
@@ -61322,23 +61398,28 @@ module.exports = internals;
 
 const { IncomingWebhook } = __nccwpck_require__(1095);
 const core = __nccwpck_require__(2186);
+const releaseUtils = __nccwpck_require__(7705);
 
 const informSlack = async (release) => {
     console.log('Informing Slack...');
 
+    const title = releaseUtils.isReleaseStrategyChangelogFile()
+        ? `${core.getInput('project-name')} ${release.name} was released :rocket:`
+        : `A new version of ${core.getInput('project-name')} was released :rocket:`;
+
     const webhook = new IncomingWebhook(core.getInput('slack-webhook-url'), {
-        icon_emoji: core.getInput('slack-icon-emoji')
+        icon_emoji: core.getInput('slack-icon-emoji'),
     });
 
     try {
         await webhook.send({
-            text: `${core.getInput('project-name')} ${release.name} was released :rocket:`,
+            text: title,
             blocks: [
                 {
                     type: 'header',
                     text: {
                         type: 'plain_text',
-                        text: `${core.getInput('project-name')} ${release.name} was released :rocket:`,
+                        text: title,
                     },
                 },
                 {
@@ -67726,26 +67807,36 @@ const core = __nccwpck_require__(2186);
 const informSlack = __nccwpck_require__(1552);
 const releaseUtils = __nccwpck_require__(7705);
 const packageUtils = __nccwpck_require__(7195);
+const gitUtils = __nccwpck_require__(130);
 
 const run = async () => {
+    console.log(`Starting release process using ${releaseUtils.getReleaseStrategy()} strategy...`);
+
     let releases = [];
     let release = {};
 
     try {
-        // Get version from package.json
-        const version = packageUtils.getPackageVersion(core.getInput('package-json-path'));
+        const version = releaseUtils.isReleaseStrategyChangelogFile()
+            ? packageUtils.getPackageVersion(core.getInput('package-json-path'))
+            : gitUtils.getCurrentGitCommitHash();
+        const message = releaseUtils.isReleaseStrategyGithubReleases()
+            ? gitUtils.getCurrentGitCommitMessage()
+            : undefined;
 
         // fetch existing releases
         releases = await releaseUtils.fetchGithubReleases();
+
+        console.log(`Checking whether version ${version} was already released...`);
 
         // Don't create release if it already exists
         if (releases.indexOf(`v${version}`) > -1) {
             throw 'Skipping: Release already exists';
         }
 
-        release = await releaseUtils.createGithubRelease();
+        console.log(`Creating Github release for ${version}...`);
+        release = await releaseUtils.createGithubRelease({ version, message });
 
-        // Notify Slack about the release
+        console.log(`Informing new release for ${version} in Slack...`);
         await informSlack(release);
 
         return release;

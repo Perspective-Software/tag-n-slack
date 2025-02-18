@@ -19,6 +19,15 @@ inputs:
     project-name:
         description: Name of the project (default = Github Repository Name)
         default: ${{ github.event.repository.name }}
+    version-increment-strategy:
+        description: Version management strategy, either changelog-file or github-releases
+        default: 'changelog-file'
+    target-commitish:
+        description: Main branch used by github-releases
+        default: 'main'
+    project-owner:
+        description: the repo owner's handle
+        default: ${{ github.event.repository.owner.login }}
 outputs:
     release:
         description: The Github release object
