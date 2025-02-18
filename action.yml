@@ -25,10 +25,9 @@ inputs:
     target-commitish:
         description: Main branch used by github-releases
         default: 'main'
-    owner:
+    project-owner:
         description: the repo owner's handle
-    repo:
-        description: the repo's name
+        default: ${{ github.event.repository.owner.login }}
 outputs:
     release:
         description: The Github release object

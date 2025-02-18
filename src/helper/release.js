@@ -68,8 +68,8 @@ internals.createGithubRelease = ({ version, message }) => {
                   body: message,
                   draft: false,
                   prerelease: false,
-                  owner: core.getInput('owner'),
-                  repo: core.getInput('repo'),
+                  owner: core.getInput('project-owner'),
+                  repo: core.getInput('project-name'),
                   cli: true,
               }
             : {};
