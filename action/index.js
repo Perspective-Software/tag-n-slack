@@ -61359,22 +61359,21 @@ internals.fetchGithubReleases = () => {
         });
 };
 
-internals.createGithubRelease = (strategy, { version, message }) => {
+internals.createGithubRelease = ({ version, message }) => {
     return new Promise((resolve, reject) => {
-        const options =
-            strategy === GITHUB_RELEASES_STRATEGY
-                ? {
-                      tag_name: version,
-                      target_commitish: core.getInput('target-commitish') || 'main',
-                      name: version,
-                      body: message,
-                      draft: false,
-                      prerelease: false,
-                      owner: core.getInput('owner'),
-                      repo: core.getInput('repo'),
-                      cli: true,
-                  }
-                : {};
+        const options = internals.isReleaseStrategyGithubReleases()
+            ? {
+                  tag_name: version,
+                  target_commitish: core.getInput('target-commitish') || 'main',
+                  name: version,
+                  body: message,
+                  draft: false,
+                  prerelease: false,
+                  owner: core.getInput('owner'),
+                  repo: core.getInput('repo'),
+                  cli: true,
+              }
+            : {};
 
         options.auth = { token };
         ghRelease(options, (err, result) => {
@@ -61399,23 +61398,28 @@ module.exports = internals;
 
 const { IncomingWebhook } = __nccwpck_require__(1095);
 const core = __nccwpck_require__(2186);
+const releaseUtils = __nccwpck_require__(7705);
 
 const informSlack = async (release) => {
     console.log('Informing Slack...');
 
+    const title = releaseUtils.isReleaseStrategyChangelogFile()
+        ? `${core.getInput('project-name')} ${release.name} was released :rocket:`
+        : `A new version of ${core.getInput('project-name')} was released :rocket:`;
+
     const webhook = new IncomingWebhook(core.getInput('slack-webhook-url'), {
-        icon_emoji: core.getInput('slack-icon-emoji')
+        icon_emoji: core.getInput('slack-icon-emoji'),
     });
 
     try {
         await webhook.send({
-            text: `${core.getInput('project-name')} ${release.name} was released :rocket:`,
+            text: title,
             blocks: [
                 {
                     type: 'header',
                     text: {
                         type: 'plain_text',
-                        text: `${core.getInput('project-name')} ${release.name} was released :rocket:`,
+                        text: title,
                     },
                 },
                 {
@@ -67806,8 +67810,7 @@ const packageUtils = __nccwpck_require__(7195);
 const gitUtils = __nccwpck_require__(130);
 
 const run = async () => {
-    const strategy = releaseUtils.getReleaseStrategy();
-    console.log(`Starting release process using ${strategy} strategy...`);
+    console.log(`Starting release process using ${releaseUtils.getReleaseStrategy()} strategy...`);
 
     let releases = [];
     let release = {};
@@ -67830,16 +67833,10 @@ const run = async () => {
             throw 'Skipping: Release already exists';
         }
 
-        console.log({
-            version,
-            message,
-        });
-
         console.log(`Creating Github release for ${version}...`);
-        release = await releaseUtils.createGithubRelease(strategy, { version, message });
+        release = await releaseUtils.createGithubRelease({ version, message });
 
         console.log(`Informing new release for ${version} in Slack...`);
-        // Notify Slack about the release
         await informSlack(release);
 
         return release;

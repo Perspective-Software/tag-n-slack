@@ -41,8 +41,8 @@ jobs:
                   project-name: ${{ github.event.repository.name }}
                   version-increment-strategy: 'changelog-file'
                   target-commitish: 'main'
-                  owner: 'owner-user'
-                  repo: 'repository-name'
+                  owner: 'repo-owner-handle'
+                  repo: 'repo-name'
 ```
 
 -   `github-access-token` (required) is automatically created during the workflow and only valid for this one workflow. Nothing to do here.
@@ -51,8 +51,9 @@ jobs:
 -   `slack-icon-emoji` (optional, default = `:rocket:`) is the Emoji next to the Slack message. Can also be one of your workspaces custom emojis.
 -   `project-name` (optional, default = `${{github.event.repository.name}}`) is the name of your project.
 -   `version-increment-strategy` (optional, default = `changelog-file`, valid options = `changelog-file` or `github-releases`). `changelog-file` strategy retrieves the version from `package.json` and the release message from `CHANGELOG.md`. `github-releases` strategy retrieves the version and message from the merge commit. The version is the 7-digit hash, and the message is the commit message. It is recommended to use this strategy with "Squash and Merge" in your PRs, where the PR title and description become the commit message.
-
 -   `target-commitish` (optional, default = `main`) is used when `version-increment-strategy` is `github-releases`, it's the project's main branch name.
+-   `owner` (required when `version-increment-strategy` is `github-releases`), it's the repo owner's handle
+-   `repo` (required when `version-increment-strategy` is `github-releases`), it's the repo's name
 
 ## How it works
 

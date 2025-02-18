@@ -5,8 +5,7 @@ const packageUtils = require('./helper/package');
 const gitUtils = require('./helper/git');
 
 const run = async () => {
-    const strategy = releaseUtils.getReleaseStrategy();
-    console.log(`Starting release process using ${strategy} strategy...`);
+    console.log(`Starting release process using ${releaseUtils.getReleaseStrategy()} strategy...`);
 
     let releases = [];
     let release = {};
@@ -29,16 +28,10 @@ const run = async () => {
             throw 'Skipping: Release already exists';
         }
 
-        console.log({
-            version,
-            message,
-        });
-
         console.log(`Creating Github release for ${version}...`);
-        release = await releaseUtils.createGithubRelease(strategy, { version, message });
+        release = await releaseUtils.createGithubRelease({ version, message });
 
         console.log(`Informing new release for ${version} in Slack...`);
-        // Notify Slack about the release
         await informSlack(release);
 
         return release;

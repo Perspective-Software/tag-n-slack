@@ -58,22 +58,21 @@ internals.fetchGithubReleases = () => {
         });
 };
 
-internals.createGithubRelease = (strategy, { version, message }) => {
+internals.createGithubRelease = ({ version, message }) => {
     return new Promise((resolve, reject) => {
-        const options =
-            strategy === GITHUB_RELEASES_STRATEGY
-                ? {
-                      tag_name: version,
-                      target_commitish: core.getInput('target-commitish') || 'main',
-                      name: version,
-                      body: message,
-                      draft: false,
-                      prerelease: false,
-                      owner: core.getInput('owner'),
-                      repo: core.getInput('repo'),
-                      cli: true,
-                  }
-                : {};
+        const options = internals.isReleaseStrategyGithubReleases()
+            ? {
+                  tag_name: version,
+                  target_commitish: core.getInput('target-commitish') || 'main',
+                  name: version,
+                  body: message,
+                  draft: false,
+                  prerelease: false,
+                  owner: core.getInput('owner'),
+                  repo: core.getInput('repo'),
+                  cli: true,
+              }
+            : {};
 
         options.auth = { token };
         ghRelease(options, (err, result) => {
