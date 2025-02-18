@@ -32,14 +32,14 @@ jobs:
               uses: actions/checkout@v2
             - name: Tag n' Slack
               id: tag-n-slack
-              uses: perspective-software/tag-n-slack@v2.0.0
+              uses: perspective-software/tag-n-slack@v2.0.1
               with:
                   github-access-token: ${{ github.token }}
                   slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_RELEASE }}
                   slack-release-link: 'https://github.com/...'
                   slack-icon-emoji: ':zap:'
                   project-name: ${{ github.event.repository.name }}
-                  version-increment-strategy: 'changelog-file'
+                  version-increment-strategy: 'github-releases'
                   target-commitish: 'main'
                   owner: 'repo-owner-handle'
                   repo: 'repo-name'
@@ -69,4 +69,4 @@ As an example, this action will create the Slack notification seen above:
 
 ## Development
 
-make adjustment as required in the `src` directory and run `npm run build` to compile it to `action/index.js` (dist) before pushing.
+make adjustment as required in the `src` directory and run `npm run build` to compile it to `action/index.js` (dist) before commiting and pushing.
