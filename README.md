@@ -81,7 +81,7 @@ _Example_: `## Description` becomes `*Description*` and `- Item` becomes `• It
 ### Ticket Links
 Ticket IDs are automatically replaced with clickable links using a configurable URL template.
 Example:
-FUN-1702 becomes <https://linear.app/perspective/issue/FUN-1702|FUN-1702>.
+`PER-1234` becomes `<https://linear.app/perspective/issue/PER-1234|PER-1234>`.
 If no ticket configuration is provided, ticket IDs remain unchanged.
 
 ### Screenshots Section
