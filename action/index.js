@@ -93085,6 +93085,8 @@ const informSlack = async (release) => {
         },
     ];
 
+    console.log('blocks', blocks);
+
     // if (screenshots.length > 0) {
     //     blocks.push({ type: 'divider' });
     //     blocks.push({
