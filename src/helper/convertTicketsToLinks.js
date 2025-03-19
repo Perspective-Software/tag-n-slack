@@ -7,8 +7,6 @@ const convertTicketsToLinks = (text) => {
     if (!ticketConfig.ticketPrefixes || !ticketConfig.ticketUrlTemplate) {
         console.log('No or invalid ticket configuration found. Skipping ticket link conversion...');
 
-        console.log(ticketConfig);
-
         return text;
     }
 
