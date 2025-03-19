@@ -42,7 +42,8 @@ jobs:
                   project-owner: ${{ github.event.repository.owner.login }}
                   version-increment-strategy: 'github-releases'
                   target-commitish: 'main'
-                  ticketConfig: '{  
+                  remove-images: ${{ github.event.repository.private }}
+                  ticket-config: '{  
                             "ticketPrefixes": ["CON", "FUN", "GRO"], 
                             "ticketUrlTemplate": "https://linear.app/XXX/issue/{ticket}",
                           }'
@@ -56,7 +57,8 @@ jobs:
 -   `project-owner` (required when `version-increment-strategy` is `github-releases`), it's the project owner's handle
 -   `version-increment-strategy` (optional, default = `changelog-file`, valid options = `changelog-file` or `github-releases`). `changelog-file` strategy retrieves the version from `package.json` and the release message from `CHANGELOG.md`. `github-releases` strategy retrieves the version and message from the merge commit. The version is the 7-digit hash, and the message is the commit message. It is recommended to use this strategy with "Squash and Merge" in your PRs, where the PR title and description become the commit message.
 -   `target-commitish` (optional, default = `main`) is used when `version-increment-strategy` is `github-releases`, it's the project's main branch name.
--  `ticketConfig` (optional) is a JSON string with the following properties:
+-   `remove-images` (optional, default = Github repo private (true) or public(false)) is a boolean to remove images from the Slack message. For private repositories this should be enabled, since the user attachments (including images) will only be accessible by people with access to the repository.
+-   `ticketConfig` (optional) is a JSON string with the following properties:
     -   `ticketPrefixes` (optional, default = `[]`) is an array of ticket prefixes to search for in the commit message. If a ticket prefix is found, it will be included in the Slack message.
     -   `ticketUrlTemplate` (optional, default = `''`) is a template string to create a link to the ticket. The template should include `{ticket}` as a placeholder for the ticket number. If a ticket prefix is found in the commit message, the ticket number will be inserted into the template to create a link.
 
