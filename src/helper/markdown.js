@@ -1,6 +1,6 @@
 const parseScreenshotsSection = require('./screenshots');
 const convertTicketsToLinks = require('./linear');
-const applyMarkdownFormatting = require('./formatting');
+const slackifyMarkdown = require('slackify-markdown');
 
 const convertMarkdownToSlack = (markdown) => {
     // Supports "_Screenshots_" or "## Screenshots"
@@ -9,7 +9,7 @@ const convertMarkdownToSlack = (markdown) => {
     const mainText = parts[0] || '';
     const screenshotsSection = parts[1] || '';
 
-    let formattedMainText = applyMarkdownFormatting(mainText)
+    let formattedMainText = slackifyMarkdown(mainText)
         // Remove inline Markdown images
         .replace(/!\[([\s\S]*?)]\((https?:\/\/[^\s)]+)\)/g, '')
         // Remove raw GitHub attachment image URLs
