@@ -2,6 +2,7 @@ const { IncomingWebhook } = require('@slack/webhook');
 const core = require('@actions/core');
 const releaseUtils = require('./release');
 const convertMarkdownToSlack = require('./markdown');
+const slackifyMarkdown = require('slackify-markdown');
 
 const informSlack = async (release) => {
     console.log('Informing Slack...');
@@ -14,7 +15,7 @@ const informSlack = async (release) => {
         icon_emoji: core.getInput('slack-icon-emoji'),
     });
 
-    const { text: formattedChangelog, screenshots, rest } = convertMarkdownToSlack(release.body);
+    // const { text: formattedChangelog, screenshots, rest } = convertMarkdownToSlack(release.body);
 
     const blocks = [
         {
@@ -38,40 +39,9 @@ const informSlack = async (release) => {
             type: 'section',
             text: {
                 type: 'mrkdwn',
-                text: formattedChangelog,
+                text: slackifyMarkdown(release.body),
             },
         },
-    ];
-
-    if (screenshots.length > 0) {
-        blocks.push({ type: 'divider' });
-        blocks.push({
-            type: 'section',
-            text: { type: 'mrkdwn', text: '*Screenshots* :camera:' },
-        });
-        screenshots.forEach((shot) => {
-            if (shot.description) {
-                blocks.push({
-                    type: 'section',
-                    text: { type: 'mrkdwn', text: `_${shot.description}_` },
-                });
-            }
-            blocks.push({
-                type: 'image',
-                image_url: shot.url,
-                alt_text: shot.description || 'Screenshot',
-            });
-        });
-    }
-    if (rest) {
-        blocks.push({ type: 'divider' });
-        blocks.push({
-            type: 'section',
-            text: { type: 'mrkdwn', text: rest },
-        });
-    }
-
-    blocks.push(
         {
             type: 'divider',
         },
@@ -93,7 +63,60 @@ const informSlack = async (release) => {
                 action_id: 'button-action',
             },
         },
-    );
+    ];
+
+    // if (screenshots.length > 0) {
+    //     blocks.push({ type: 'divider' });
+    //     blocks.push({
+    //         type: 'section',
+    //         text: { type: 'mrkdwn', text: '*Screenshots* :camera:' },
+    //     });
+    //     screenshots.forEach((shot) => {
+    //         if (shot.description) {
+    //             blocks.push({
+    //                 type: 'section',
+    //                 text: { type: 'mrkdwn', text: `_${shot.description}_` },
+    //             });
+    //         }
+    //         blocks.push({
+    //             type: 'image',
+    //             image_url: shot.url,
+    //             alt_text: shot.description || 'Screenshot',
+    //         });
+    //     });
+    // }
+    //
+    // if (rest) {
+    //     blocks.push({ type: 'divider' });
+    //     blocks.push({
+    //         type: 'section',
+    //         text: { type: 'mrkdwn', text: rest },
+    //     });
+    // }
+
+    // blocks.push(
+    //     {
+    //         type: 'divider',
+    //     },
+    //     {
+    //         type: 'section',
+    //         text: {
+    //             type: 'mrkdwn',
+    //             text: '*Check it out!*',
+    //         },
+    //         accessory: {
+    //             type: 'button',
+    //             text: {
+    //                 type: 'plain_text',
+    //                 text: 'Visit',
+    //                 emoji: true,
+    //             },
+    //             value: 'visit',
+    //             url: core.getInput('slack-release-link'),
+    //             action_id: 'button-action',
+    //         },
+    //     },
+    // );
 
     try {
         await webhook.send({
