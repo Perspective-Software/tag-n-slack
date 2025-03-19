@@ -5,7 +5,7 @@ const core = require('@actions/core');
  * @returns {{ticketPrefixes: string[], ticketUrlTemplate}}
  */
 const getConfig = () => {
-    const configInput = core.getInput('config') || '{}';
+    const configInput = core.getInput('ticketConfig') || '{}';
     let config = {};
     try {
         config = JSON.parse(configInput);

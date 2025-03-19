@@ -28,6 +28,9 @@ inputs:
     project-owner:
         description: the repo owner's handle
         default: ${{ github.event.repository.owner.login }}
+    ticketConfig:
+        description: JSON string to format the ticketing system links
+        default: '{}'
 outputs:
     release:
         description: The Github release object
