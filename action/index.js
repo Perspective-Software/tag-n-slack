@@ -65311,8 +65311,14 @@ const ticketConfig = getTicketConfig();
 
 const convertTicketsToLinks = (text) => {
     if (!ticketConfig.ticketPrefixes || !ticketConfig.ticketUrlTemplate) {
+        console.log('No or invalid ticket configuration found. Skipping ticket link conversion...');
+
+        console.log(ticketConfig);
+
         return text;
     }
+
+    console.log('Rewriting ticket strings to links...')
 
     const sanitizedPrefixes = ticketConfig.ticketPrefixes.map(prefix => escapeRegExp(prefix));
     const prefixesPattern = sanitizedPrefixes.join('|'); // e.g. "CON|FUN|GRO"
@@ -65337,7 +65343,7 @@ const core = __nccwpck_require__(2186);
 
 /**
  *
- * @returns {{ticketPrefixes: string[], ticketUrlTemplate}}
+ * @returns {{ticketPrefixes: string[], ticketUrlTemplate: string}}
  */
 const getTicketConfig = () => {
     const configInput = core.getInput('ticket-config') || '{}';
@@ -65527,8 +65533,6 @@ const releaseUtils = __nccwpck_require__(7705);
 const mack = __nccwpck_require__(805);
 
 const informSlack = async (release) => {
-    console.log('Informing Slack...');
-
     const title = releaseUtils.isReleaseStrategyChangelogFile()
         ? `${core.getInput('project-name')} ${release.name} was released :rocket:`
         : `A new version of ${core.getInput('project-name')} was released :rocket:`;
@@ -65594,6 +65598,8 @@ const informSlack = async (release) => {
     ];
 
     try {
+        console.log('Posting to Slack...');
+
         await webhook.send({
             text: title,
             blocks,
@@ -74790,8 +74796,6 @@ const run = async () => {
 
         console.log(`Creating Github release for ${version}...`);
         release = await releaseUtils.createGithubRelease({ version, message });
-
-        console.log('release', release);
 
         console.log(`Informing new release for ${version} in Slack...`);
         await informSlack(release);
