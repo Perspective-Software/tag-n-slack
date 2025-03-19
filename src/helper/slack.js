@@ -15,8 +15,15 @@ const informSlack = async (release) => {
         icon_emoji: core.getInput('slack-icon-emoji'),
     });
 
-    // const { text: formattedChangelog, screenshots, rest } = convertMarkdownToSlack(release.body);
-    const slackBlocks = await mack.markdownToBlocks(release.body);
+    let bodyContent = release.body;
+    const hasRemoveImage = core.getInput('remove-images');
+
+    if(hasRemoveImage) {
+        console.log('Removing images from release body...');
+        bodyContent = release.body.replace(/!\[([\s\S]*?)]\((https?:\/\/[^\s)]+)\)/g, '_image_');
+    }
+
+    const slackBlocks = await mack.markdownToBlocks(bodyContent);
 
     console.log('slackBlocks', slackBlocks);
 
