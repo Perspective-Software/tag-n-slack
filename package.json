@@ -1,7 +1,7 @@
 {
   "name": "tag-n-slack",
   "description": "Creates a new Tag with a Changelog from `CHANGELOG.md` using the `version` from `package.json` and notifies Slack about the release.",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "scripts": {
     "build": "ncc build src/index.js -o action"
   },
