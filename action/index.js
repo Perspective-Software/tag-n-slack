@@ -92709,11 +92709,13 @@ const core = __nccwpck_require__(42186);
 const getConfig = () => {
     const configInput = core.getInput('ticketConfig') || '{}';
     let config = {};
+
     try {
         config = JSON.parse(configInput);
     } catch (err) {
         console.error("Error parsing config:", err);
     }
+
     return config;
 }
 
@@ -92764,9 +92766,11 @@ const convertTicketsToLinks = (text) => {
     if (!config.ticketPrefixes || !config.ticketUrlTemplate) {
         return text;
     }
+
     const sanitizedPrefixes = config.ticketPrefixes.map(prefix => _.escapeRegExp(prefix));
     const prefixesPattern = sanitizedPrefixes.join('|'); // e.g. "CON|FUN|GRO"
     const regex = new RegExp(`\\b(${prefixesPattern})-(\\d+)\\b`, 'g');
+
     return text.replace(regex, (match) => {
         const url = config.ticketUrlTemplate.replace('{ticket}', match);
         return `<${url}|${match}>`;
@@ -92949,6 +92953,7 @@ const parseScreenshotsSection = (sectionText) => {
     // Regex for Markdown image (supports multi-line alt text)
     const markdownRegex = /!\[([\s\S]*?)]\((https?:\/\/[^\s)]+)\)/g;
     let regexMatch;
+
     while ((regexMatch = markdownRegex.exec(sectionText)) !== null) {
         matches.push({
             index: regexMatch.index,
@@ -92961,6 +92966,7 @@ const parseScreenshotsSection = (sectionText) => {
 
     // GitHub attachment image URLs
     const rawRegex = /^(https?:\/\/github\.com\/user-attachments\/assets\/[^\s]+)$/gm;
+
     while ((regexMatch = rawRegex.exec(sectionText)) !== null) {
         matches.push({
             index: regexMatch.index,
@@ -92976,6 +92982,7 @@ const parseScreenshotsSection = (sectionText) => {
 
     const screenshots = [];
     let lastIndex = 0;
+
     for (const match of matches) {
         // Text between images is the description
         let description = sectionText.substring(lastIndex, match.index).trim();
@@ -92983,12 +92990,15 @@ const parseScreenshotsSection = (sectionText) => {
             .replace(/\n+/g, ' ')
             .replace(/^#{1,6}\s*/, '') // Remove leading Markdown headers
             .trim();
+
         // use alt text as fallback
         if (!description && match.alt) {
             description = match.alt.trim();
         }
+
         description = convertTicketsToLinks(description);
         screenshots.push({ description, url: match.url });
+
         // Use the full match length so extra characters aren't included.
         // to prevent "123a)" from being included in the  description.
         lastIndex = match.index + match.fullMatch.length;
@@ -93012,6 +93022,7 @@ const { IncomingWebhook } = __nccwpck_require__(81095);
 const core = __nccwpck_require__(42186);
 const releaseUtils = __nccwpck_require__(77705);
 const convertMarkdownToSlack = __nccwpck_require__(51881);
+const slackifyMarkdown = __nccwpck_require__(89418);
 
 const informSlack = async (release) => {
     console.log('Informing Slack...');
@@ -93024,7 +93035,7 @@ const informSlack = async (release) => {
         icon_emoji: core.getInput('slack-icon-emoji'),
     });
 
-    const { text: formattedChangelog, screenshots, rest } = convertMarkdownToSlack(release.body);
+    // const { text: formattedChangelog, screenshots, rest } = convertMarkdownToSlack(release.body);
 
     const blocks = [
         {
@@ -93048,40 +93059,9 @@ const informSlack = async (release) => {
             type: 'section',
             text: {
                 type: 'mrkdwn',
-                text: formattedChangelog,
+                text: slackifyMarkdown(release.body),
             },
         },
-    ];
-
-    if (screenshots.length > 0) {
-        blocks.push({ type: 'divider' });
-        blocks.push({
-            type: 'section',
-            text: { type: 'mrkdwn', text: '*Screenshots* :camera:' },
-        });
-        screenshots.forEach((shot) => {
-            if (shot.description) {
-                blocks.push({
-                    type: 'section',
-                    text: { type: 'mrkdwn', text: `_${shot.description}_` },
-                });
-            }
-            blocks.push({
-                type: 'image',
-                image_url: shot.url,
-                alt_text: shot.description || 'Screenshot',
-            });
-        });
-    }
-    if (rest) {
-        blocks.push({ type: 'divider' });
-        blocks.push({
-            type: 'section',
-            text: { type: 'mrkdwn', text: rest },
-        });
-    }
-
-    blocks.push(
         {
             type: 'divider',
         },
@@ -93103,7 +93083,62 @@ const informSlack = async (release) => {
                 action_id: 'button-action',
             },
         },
-    );
+    ];
+
+    console.log('blocks', blocks);
+
+    // if (screenshots.length > 0) {
+    //     blocks.push({ type: 'divider' });
+    //     blocks.push({
+    //         type: 'section',
+    //         text: { type: 'mrkdwn', text: '*Screenshots* :camera:' },
+    //     });
+    //     screenshots.forEach((shot) => {
+    //         if (shot.description) {
+    //             blocks.push({
+    //                 type: 'section',
+    //                 text: { type: 'mrkdwn', text: `_${shot.description}_` },
+    //             });
+    //         }
+    //         blocks.push({
+    //             type: 'image',
+    //             image_url: shot.url,
+    //             alt_text: shot.description || 'Screenshot',
+    //         });
+    //     });
+    // }
+    //
+    // if (rest) {
+    //     blocks.push({ type: 'divider' });
+    //     blocks.push({
+    //         type: 'section',
+    //         text: { type: 'mrkdwn', text: rest },
+    //     });
+    // }
+
+    // blocks.push(
+    //     {
+    //         type: 'divider',
+    //     },
+    //     {
+    //         type: 'section',
+    //         text: {
+    //             type: 'mrkdwn',
+    //             text: '*Check it out!*',
+    //         },
+    //         accessory: {
+    //             type: 'button',
+    //             text: {
+    //                 type: 'plain_text',
+    //                 text: 'Visit',
+    //                 emoji: true,
+    //             },
+    //             value: 'visit',
+    //             url: core.getInput('slack-release-link'),
+    //             action_id: 'button-action',
+    //         },
+    //     },
+    // );
 
     try {
         await webhook.send({
