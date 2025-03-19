@@ -109,7 +109,7 @@ coords).
 ![image](https://github.com/user-attachments/assets/XXX)
 
 ### After:
-ℹ️ Validation doesn't kicks in during typing the email any more, also
+ℹ️ Validation doesn't kick in during typing the email anymore, also
 fixed the label that position was broken:
 
 ![image](https://github.com/user-attachments/assets/XXX)

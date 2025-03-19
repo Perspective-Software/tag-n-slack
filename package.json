@@ -1,7 +1,7 @@
 {
   "name": "tag-n-slack",
   "description": "Creates a new Tag with a Changelog from `CHANGELOG.md` using the `version` from `package.json` and notifies Slack about the release.",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "scripts": {
     "build": "ncc build src/index.js -o action"
   },
@@ -11,7 +11,8 @@
     "@slack/webhook": "^7.0.2",
     "axios": "1.6.7",
     "gh-release": "^7.0.2",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "slackify-markdown": "^4.4.0"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.34.0",
