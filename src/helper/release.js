@@ -2,6 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const ghRelease = require('gh-release');
 const axios = require('axios');
+const convertTicketsToLinks = require('./convertTicketsToLinks');
 
 const STRATEGY_INPUT_NAME = 'version-increment-strategy';
 
@@ -59,13 +60,15 @@ internals.fetchGithubReleases = () => {
 };
 
 internals.createGithubRelease = ({ version, message }) => {
+    const messageWithTicketLinks = convertTicketsToLinks(message);
+
     return new Promise((resolve, reject) => {
         const options = internals.isReleaseStrategyGithubReleases()
             ? {
                   tag_name: version,
                   target_commitish: core.getInput('target-commitish') || 'main',
                   name: version,
-                  body: message,
+                  body: messageWithTicketLinks,
                   draft: false,
                   prerelease: false,
                   owner: core.getInput('project-owner'),

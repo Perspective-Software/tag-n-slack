@@ -4,8 +4,8 @@ const core = require('@actions/core');
  *
  * @returns {{ticketPrefixes: string[], ticketUrlTemplate}}
  */
-const getConfig = () => {
-    const configInput = core.getInput('ticketConfig') || '{}';
+const getTicketConfig = () => {
+    const configInput = core.getInput('ticket-config') || '{}';
     let config = {};
 
     try {
@@ -17,4 +17,4 @@ const getConfig = () => {
     return config;
 }
 
-module.exports = getConfig;
+module.exports = getTicketConfig;

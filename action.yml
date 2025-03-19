@@ -29,7 +29,7 @@ inputs:
         description: the repo owner's handle
         default: ${{ github.event.repository.owner.login }}
     remove-images:
-        description: Remove images from the Slack message
+        description: Remove images and github user attachments from the Slack message
         default: ${{ github.event.repository.private }}
     ticket-config:
         description: JSON string to format the ticketing system links
