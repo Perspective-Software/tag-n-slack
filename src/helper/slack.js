@@ -4,8 +4,6 @@ const releaseUtils = require('./release');
 const mack = require('@tryfabric/mack');
 
 const informSlack = async (release) => {
-    console.log('Informing Slack...');
-
     const title = releaseUtils.isReleaseStrategyChangelogFile()
         ? `${core.getInput('project-name')} ${release.name} was released :rocket:`
         : `A new version of ${core.getInput('project-name')} was released :rocket:`;
@@ -71,6 +69,8 @@ const informSlack = async (release) => {
     ];
 
     try {
+        console.log('Posting to Slack...');
+
         await webhook.send({
             text: title,
             blocks,

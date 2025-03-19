@@ -2,7 +2,7 @@ const core = require('@actions/core');
 
 /**
  *
- * @returns {{ticketPrefixes: string[], ticketUrlTemplate}}
+ * @returns {{ticketPrefixes: string[], ticketUrlTemplate: string}}
  */
 const getTicketConfig = () => {
     const configInput = core.getInput('ticket-config') || '{}';
