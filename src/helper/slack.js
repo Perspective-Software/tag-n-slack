@@ -2,7 +2,7 @@ const { IncomingWebhook } = require('@slack/webhook');
 const core = require('@actions/core');
 const releaseUtils = require('./release');
 const convertMarkdownToSlack = require('./markdown');
-const slackifyMarkdown = require('slackify-markdown');
+const mack = require('@tryfabric/mack');
 
 const informSlack = async (release) => {
     console.log('Informing Slack...');
@@ -16,6 +16,9 @@ const informSlack = async (release) => {
     });
 
     // const { text: formattedChangelog, screenshots, rest } = convertMarkdownToSlack(release.body);
+    const slackBlocks = await mack.markdownToBlocks(release.body);
+
+    console.log('slackBlocks', slackBlocks);
 
     const blocks = [
         {
@@ -35,13 +38,7 @@ const informSlack = async (release) => {
                 text: '*Changelog* :notebook_with_decorative_cover:',
             },
         },
-        {
-            type: 'section',
-            text: {
-                type: 'mrkdwn',
-                text: slackifyMarkdown(release.body),
-            },
-        },
+        ...slackBlocks,
         {
             type: 'divider',
         },
