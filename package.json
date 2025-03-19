@@ -10,7 +10,8 @@
     "@actions/github": "^6.0.0",
     "@slack/webhook": "^7.0.2",
     "axios": "1.6.7",
-    "gh-release": "^7.0.2"
+    "gh-release": "^7.0.2",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.34.0",
