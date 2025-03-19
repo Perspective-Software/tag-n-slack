@@ -7,11 +7,13 @@ const core = require('@actions/core');
 const getConfig = () => {
     const configInput = core.getInput('ticketConfig') || '{}';
     let config = {};
+
     try {
         config = JSON.parse(configInput);
     } catch (err) {
         console.error("Error parsing config:", err);
     }
+
     return config;
 }
 
