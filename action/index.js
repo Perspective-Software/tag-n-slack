@@ -65487,15 +65487,13 @@ internals.fetchGithubReleases = () => {
 };
 
 internals.createGithubRelease = ({ version, message }) => {
-    const messageWithTicketLinks = convertTicketsToLinks(message);
-
     return new Promise((resolve, reject) => {
         const options = internals.isReleaseStrategyGithubReleases()
             ? {
                   tag_name: version,
                   target_commitish: core.getInput('target-commitish') || 'main',
                   name: version,
-                  body: messageWithTicketLinks,
+                  body: message,
                   draft: false,
                   prerelease: false,
                   owner: core.getInput('project-owner'),
@@ -65529,6 +65527,7 @@ const { IncomingWebhook } = __nccwpck_require__(1095);
 const core = __nccwpck_require__(2186);
 const releaseUtils = __nccwpck_require__(7705);
 const mack = __nccwpck_require__(805);
+const convertTicketsToLinks = __nccwpck_require__(490);
 
 const informSlack = async (release) => {
     const title = releaseUtils.isReleaseStrategyChangelogFile()
@@ -65541,6 +65540,8 @@ const informSlack = async (release) => {
 
     let bodyContent = release.body;
     const hasRemoveImage = core.getInput('remove-images');
+
+    bodyContent = convertTicketsToLinks(bodyContent);
 
     if(hasRemoveImage) {
         console.log('Removing images from release body...');

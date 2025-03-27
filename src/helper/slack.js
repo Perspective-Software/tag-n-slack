@@ -2,6 +2,7 @@ const { IncomingWebhook } = require('@slack/webhook');
 const core = require('@actions/core');
 const releaseUtils = require('./release');
 const mack = require('@tryfabric/mack');
+const convertTicketsToLinks = require('./convertTicketsToLinks');
 
 const informSlack = async (release) => {
     const title = releaseUtils.isReleaseStrategyChangelogFile()
@@ -14,6 +15,8 @@ const informSlack = async (release) => {
 
     let bodyContent = release.body;
     const hasRemoveImage = core.getInput('remove-images');
+
+    bodyContent = convertTicketsToLinks(bodyContent);
 
     if(hasRemoveImage) {
         console.log('Removing images from release body...');

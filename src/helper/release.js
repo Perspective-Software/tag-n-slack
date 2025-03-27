@@ -60,15 +60,13 @@ internals.fetchGithubReleases = () => {
 };
 
 internals.createGithubRelease = ({ version, message }) => {
-    const messageWithTicketLinks = convertTicketsToLinks(message);
-
     return new Promise((resolve, reject) => {
         const options = internals.isReleaseStrategyGithubReleases()
             ? {
                   tag_name: version,
                   target_commitish: core.getInput('target-commitish') || 'main',
                   name: version,
-                  body: messageWithTicketLinks,
+                  body: message,
                   draft: false,
                   prerelease: false,
                   owner: core.getInput('project-owner'),
