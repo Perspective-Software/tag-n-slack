@@ -65545,7 +65545,7 @@ const informSlack = async (release) => {
 
     if(hasRemoveImage) {
         console.log('Removing images from release body...');
-        bodyContent = release.body
+        bodyContent = bodyContent
             // Remove inline Markdown images
             .replace(/!\[([\s\S]*?)]\((https?:\/\/[^\s)]+)\)/g, '_-private image-_')
             // Remove raw GitHub attachment image URLs
